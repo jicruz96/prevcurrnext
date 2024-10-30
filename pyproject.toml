@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "prevcurrnext"
-version = "0.1.0"
+version = "0.1.1"
 description = "Iteration utils for \"prev\", \"curr\", and \"next\"-style for-loops."
 authors = ["J.I. Cruz <hello@jicruz.com>"]
 license = "MIT"
