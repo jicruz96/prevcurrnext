@@ -1,7 +1,7 @@
-from typing import Iterable
+from typing import Any, Iterable
 
 
-def currprev[T](
+def currprev[T = Any](
     iterable: Iterable[T],
     *,
     start_prev_on_none: bool = True,
@@ -13,10 +13,10 @@ def currprev[T](
             yield curr, prev
         prev = curr
     if end_curr_on_none and prev is not None:
-        yield prev, None
+        yield None, prev
 
 
-def prevcurr[T](
+def prevcurr[T = Any](
     iterable: Iterable[T],
     *,
     start_prev_on_none: bool = True,
@@ -30,24 +30,28 @@ def prevcurr[T](
         yield prev, curr
 
 
-def currnext[T](
+def currnext[T = Any](
     iterable: Iterable[T],
     *,
     start_curr_on_none: bool = False,
     end_next_on_none: bool = True,
 ) -> Iterable[tuple[T | None, T | None]]:
     iterator = iter(iterable)
-    curr = None
-    if not start_curr_on_none:
-        curr = next(iterator)
+    try:
+        if not start_curr_on_none:
+            curr = next(iterator)
+        else:
+            curr = None
+    except StopIteration:
+        return
     for _next in iterator:
         yield curr, _next
         curr = _next
-    if end_next_on_none:
+    if end_next_on_none and curr is not None:
         yield curr, None
 
 
-def nextcurr[T](
+def nextcurr[T = Any](
     iterable: Iterable[T],
     *,
     start_curr_on_none: bool = False,
@@ -61,7 +65,7 @@ def nextcurr[T](
         yield _next, curr
 
 
-def prevcurrnext[T](
+def prevcurrnext[T = Any](
     iterable: Iterable[T],
     *,
     start_prev_on_none: bool = True,
@@ -75,10 +79,20 @@ def prevcurrnext[T](
     if not start_prev_on_none:
         if start_curr_on_none:
             raise ValueError("start_curr_on_none=True requires start_prev_on_none=True")
-        prev = next(iterator)
-        curr = next(iterator)
+        try:
+            prev = next(iterator)
+        except StopIteration:
+            return
+        try:
+            curr = next(iterator)
+        except StopIteration:
+            yield prev, None, None
+            return
     elif not start_curr_on_none:
-        curr = next(iterator)
+        try:
+            curr = next(iterator)
+        except StopIteration:
+            return
     for _next in iterator:
         yield prev, curr, _next
         prev = curr
@@ -92,19 +106,19 @@ def prevcurrnext[T](
         yield prev, curr, None
 
 
-def nextcurrprev[T](
+def nextcurrprev[T = Any](
     iterable: Iterable[T],
     *,
+    start_prev_on_none: bool = True,
     start_curr_on_none: bool = False,
-    start_next_on_none: bool = True,
     end_curr_on_none: bool = False,
-    end_prev_on_none: bool = True,
+    end_next_on_none: bool = True,
 ) -> Iterable[tuple[T | None, T | None, T | None]]:
     for prev, curr, _next in prevcurrnext(
         iterable,
-        start_prev_on_none=start_curr_on_none,
-        start_curr_on_none=start_next_on_none,
+        start_prev_on_none=start_prev_on_none,
+        start_curr_on_none=start_curr_on_none,
         end_curr_on_none=end_curr_on_none,
-        end_next_on_none=end_prev_on_none,
+        end_next_on_none=end_next_on_none,
     ):
         yield _next, curr, prev
