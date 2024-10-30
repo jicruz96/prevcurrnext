@@ -13,52 +13,56 @@ pip install prevcurrnext
 The `prevcurrnext` function yields pairs of consecutive elements from an iterable, allowing you to see the "previous", "current", and "next" items for each element. It includes options to yield `None` at the beginning and/or end of the sequence for convenient boundary handling.
 
 ```python
-from prevcurrnext import prevcurr
+from prevcurrnext import prevcurr, currnext, prevcurrnext
 
 # Basic usage
-for prev, curr in prevcurr([1, 2, 3, 4]):
+for prev, curr in prevcurr([1, 2, 3]):
     print(prev, curr)
 # Output:
 # None 1
 # 1 2
 # 2 3
-# 3 4
 
 # Customizing boundary behavior
 # Adding None at the end
-for prev, curr in prevcurr([1, 2, 3, 4], end_next_on_none=True):
+for prev, curr in prevcurr([1, 2, 3], end_curr_on_none=True):
     print(prev, curr)
 # Output:
 # None 1
 # 1 2
 # 2 3
-# 3 4
-# 4 None
+# 3 None
+
+for curr, _next in currnext([1, 2, 3]):
+    print(curr, _next)
+# Output:
+# 1 2
+# 2 3
+# 3 None
+
+for prev, curr, _next in prevcurrnext([1, 2, 3]):
+    print(prev, curr, _next)
+# Output:
+# None 1 2
+# 1 2 3
+# 2 3 None
 ```
 
-### Parameters
+### Available functions
+
+* **`currprev`**
+* **`prevcurr`**
+* **`currnext`**
+* **`nextcurr`**
+* **`prevcurrnext`**
+* **`nextcurrprev`**
+
+All functions have nearly the exact same parameters:
 
 - **`iterable`**: The iterable to process.
-- **`start_prev_on_none`** *(optional)*: Whether to yield `None` for the "previous" item before the first element. Default is `True`.
-- **`end_next_on_none`** *(optional)*: Whether to yield `None` for the "next" item after the last element. Default is `False`.
-
-## Examples
-
-```python
-from prevcurr import prevcurr
-
-# Standard iteration with previous and next items
-for prev, curr in prevcurr([10, 20, 30]):
-    print(f"Prev: {prev}, Curr: {curr}")
-
-# Start without None for previous
-for prev, curr in prevcurr([10, 20, 30], start_prev_on_none=False):
-    print(f"Prev: {prev}, Curr: {curr}")
-
-# Add None for next at the end
-for prev, curr in prevcurr([10, 20, 30], end_next_on_none=True):
-    print(f"Prev: {prev}, Curr: {curr}")
-```
+- **`start_prev_on_none`**: Whether to yield `None` for the "previous" item before the first element. Default is `True`.
+- **`end_curr_on_none`**: Whether to yield `None` for the "current" item after the last element. Default is `False`.
+- **`end_next_on_none`**: Whether to yield `None` for the "next" item after the last element. Default is `True`.
 
 ## Contributing
 
