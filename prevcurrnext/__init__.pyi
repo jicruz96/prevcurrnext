@@ -122,12 +122,16 @@ def nextcurr[T = Any](
 @overload
 def prevcurrnext[T = Any](
     iterable: Iterable[T],
+) -> Iterable[tuple[T | None, T, T | None]]: ...
+@overload
+def prevcurrnext[T = Any](
+    iterable: Iterable[T],
     *,
     start_prev_on_none: Literal[False],
     start_curr_on_none: Literal[False] = False,
-    end_curr_on_none: bool = False,
+    end_curr_on_none: Literal[False] = False,
     end_next_on_none: Literal[True] = True,
-) -> Iterable[tuple[T, T | None, T | None]]: ...
+) -> Iterable[tuple[T, T, T | None]]: ...
 @overload
 def prevcurrnext[T = Any](
     iterable: Iterable[T],
@@ -137,6 +141,24 @@ def prevcurrnext[T = Any](
     end_curr_on_none: Literal[False] = False,
     end_next_on_none: Literal[False],
 ) -> Iterable[tuple[T, T, T]]: ...
+@overload
+def prevcurrnext[T = Any](
+    iterable: Iterable[T],
+    *,
+    start_prev_on_none: bool = True,
+    start_curr_on_none: Literal[False] = False,
+    end_curr_on_none: Literal[False] = False,
+    end_next_on_none: Literal[False],
+) -> Iterable[tuple[T | None, T, T]]: ...
+@overload
+def prevcurrnext[T = Any](
+    iterable: Iterable[T],
+    *,
+    start_prev_on_none: Literal[False],
+    start_curr_on_none: Literal[False] = False,
+    end_curr_on_none: bool = False,
+    end_next_on_none: Literal[True] = True,
+) -> Iterable[tuple[T, T | None, T | None]]: ...
 @overload
 def prevcurrnext[T = Any](
     iterable: Iterable[T],
